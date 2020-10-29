@@ -45,8 +45,9 @@ RUN apt clean -y \
     && apt-add-repository -y multiverse \
     && apt update -y \
     && apt dist-upgrade -y \
-    && apt-get update -y \
-    && apt-get install --no-install-recommends -yq \
+    && apt-get update -y
+
+RUN apt-get install --no-install-recommends -yq \
         apache2 \
         libapache2-mod-php7.4 \
         php7.4-common \
@@ -73,30 +74,19 @@ RUN apt clean -y \
         php7.4-xml \
         php7.4-zip \
         php7.4-dev \
-        php-apcu \
-        php-ast \
-        php-bcmath \
-        php-bz2 \
-        php-common \
-        php-curl \
-        php-gd \
-        php-db \
-        php-geoip \
-        php-geos \
-        php-gmp \
-        php-imagick \
-        php-json \
-        php-mbstring \
-        php-memcached \
-        php-oauth \
-        php-parser \
-        php-xdebug \
-        php-xml \
-        php-zip \
-        make \
+        php7.4-apcu \
+        php7.4-memcached \
+        php7.4-xdebug \
+        make
+RUN a2enmod rewrite \
+    && ln -sf /dev/stdout /var/log/apache2/access.log \
+    && ln -sf /dev/stdout /var/log/apache2/error.log \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php --install-dir=bin \
+    && php composer-setup.php --install-dir=/usr/bin \
     && php -r "unlink('composer-setup.php');" \
+    && composer.phar global require phalcon/devtools robmorgan/phinx \
+    && ln -s /root/.composer/vendor/bin/phalcon /usr/bin/phalcon \
+    && ln -s /root/.composer/vendor/bin/phinx /usr/bin/phinx \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /tmp/* /var/tmp/* \
