@@ -79,6 +79,7 @@ RUN apt-get install --no-install-recommends -yq \
         php7.4-xdebug \
         make
 RUN a2enmod rewrite \
+    && a2enmod headers \
     && ln -sf /dev/stdout /var/log/apache2/access.log \
     && ln -sf /dev/stdout /var/log/apache2/error.log \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
